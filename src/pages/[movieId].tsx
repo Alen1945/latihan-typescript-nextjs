@@ -91,15 +91,14 @@ export default function Movie({
     </Layout>
   );
 }
-type queryMovie = {
-  movieId: integer;
-};
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const data: MovieInterface[] | undefined = await GetData(
     "https://www.omdbapi.com/?apiKey=b445ca0b&s=avenger"
   );
-  const query: queryMovie = ctx.query;
+  const movie: MovieInterface | undefined =
+    data?.[ctx.query.movieId ? ctx.query.movieId - 1 : 0];
   return {
-    props: { detailMovie: data[query.movieId - 1] },
+    props: { detailMovie: movie },
   };
 };
