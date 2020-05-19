@@ -4,8 +4,7 @@ export const GetData = async (url) => {
   try {
     const response = await fetch(url);
     const resjson = await response.json();
-    console.log("ini", resjson);
-    return resjson;
+    return resjson.Search;
   } catch (err) {
     throw err;
   }

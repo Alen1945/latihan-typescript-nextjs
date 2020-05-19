@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "../Layout/Layout";
+import { GetServerSideProps } from "next";
+import MovieInterface from "../interface/movieInterface";
 import {
   Container,
   Paper,
@@ -47,24 +49,9 @@ const styles = makeStyles({
     borderRadius: "50%",
   },
 });
-const HomePage: React.FC = () => {
-  const [dataMovie, setDataMovie] = useState([]);
+const HomePage: React.FC = ({ movie }: MovieInterface[] | undefind) => {
+  const [dataMovie, setDataMovie] = useState(movie);
   const classes = styles();
-  const getData = async () => {
-    try {
-      const data = await GetData(
-        "https://www.omdbapi.com/?apiKey=b445ca0b&s=avenger"
-      );
-      if (data.Response) {
-        setDataMovie(data.Search);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  useEffect(() => {
-    getData();
-  }, []);
   return (
     <Layout title="Home Movie">
       <Container maxWidth="md" style={{ marginTop: "50px" }}>
@@ -101,7 +88,7 @@ const HomePage: React.FC = () => {
                   <Box className={classes.containerPoster}>
                     <Link
                       href="/[movieId]"
-                      as={`/${i}`}
+                      as={`/${i + 1}`}
                       className={classes.titleMovie}
                     >
                       <h5 style={{ color: "#fff", margin: 0 }}>{v.Title}</h5>
@@ -118,3 +105,12 @@ const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const data: MovieInterface[] | undefined = await GetData(
+    "https://www.omdbapi.com/?apiKey=b445ca0b&s=avenger"
+  );
+  return {
+    props: { movie: data },
+  };
+};
